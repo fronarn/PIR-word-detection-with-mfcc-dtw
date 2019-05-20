@@ -35,11 +35,11 @@ void getData(string nom, paTestData &data, bool Test){
     _getcwd(path, sizeof(path));
     
     if (Test)
-        fichier.open(path + (DIR_VALEURS_UTILES_TEST + nom));
+        fichier.open(path + (DIR_ENREGISTREMENTS_TEST + nom));
     else
-        fichier.open(path + (DIR_VALEURS_UTILES + nom)); 
+        fichier.open(path + (DIR_ENREGISTREMENTS + nom)); 
     
-    cout << "Copie du fichier : " << path + (DIR_VALEURS_UTILES_TEST + nom) << endl << flush;
+    cout << "Copie du fichier : " << path + (DIR_ENREGISTREMENTS_TEST + nom) << endl << flush;
     
 
     for (int i = 0; i < data.maxFrameIndex; i++)

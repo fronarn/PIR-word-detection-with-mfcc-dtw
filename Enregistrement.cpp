@@ -12,7 +12,7 @@ int main(void)
     paTestData  data;
     char        reponse;
     int         num_secondes;
-    bool        Test = false;
+    bool        Test = true;
 
     Pa_Initialize();
 
@@ -56,7 +56,7 @@ int main(void)
             writeFile(rep + ".txt", ' ', data, Test);
         }
         //TEST pour booster le son
-        boostLeSon(data, 5);
+        boostLeSon(data, 3);
 
         /* Playback recorded data.  -------------------------------------------- */
         
