@@ -1,4 +1,6 @@
 #include "detection.h"
+#include "Sensor.h" 
+#include "playmp3.h"
 
 void UI_begin(bool &Test){
     char rep;
@@ -42,6 +44,8 @@ int main(){
     // Permet de mettre le bon répertoire, à voir comment on l'implémente à la fin
     bool Test;
     UI_begin(Test);
+    
+            playmp3(Test, "est_ce_que_vous_allez_bien");
 
     // Enregistre les mots
     while (UI_askEnreg()){
@@ -52,29 +56,47 @@ int main(){
         enregistrerMot(Test, nomFichier, nbFois, numSecondes);
     }
 
-    paTestData dataPlay;
-    dataPlay.maxFrameIndex = 2 * SAMPLE_RATE;
-    dataPlay.frameIndex = 0;
-    dataPlay.recordedSamples = new float[dataPlay.maxFrameIndex * NUM_CHANNELS] ; 
+    // paTestData EstCeQueVousAllezBien;
+    // EstCeQueVousAllezBien.maxFrameIndex = 2 * SAMPLE_RATE; // l'audio dure 2 sec
+    // EstCeQueVousAllezBien.frameIndex = 0;
+    // EstCeQueVousAllezBien.recordedSamples = new float[EstCeQueVousAllezBien.maxFrameIndex * NUM_CHANNELS] ;
 
-    getData("estcequevousallezbien.txt", dataPlay, Test);
+    // getData("estcequevousallezbien.txt", EstCeQueVousAllezBien, Test);
+    // boostLeSon(EstCeQueVousAllezBien, 4);
+    
+    Sensor tombe("VOICECHECK");
+    Sensor mort("APP");
+    mort.getContent();
+    // mort.setLocation("la salle de bain");
+    tombe.getContent();
 
     // Faire la requête oM2M ici
-    // while (true){
+    while (true){
         // attente_oM2M();
-        
-        playData(dataPlay);
-        string mot = devineMot(Test, 4);
+        tombe.waitEvent();
+        mort.setLocation(tombe.getLocation());
+        mort.setName(tombe.getName());
 
-        if ( mot.empty() ) {
-            // faire un truc
-            cout << 1;
-        } else if ( mot == "oui" || mot == "cava" || mot == "jevaisbien" || mot == "d'autres mots où il confirme") {
-            // faire autre chose
-            cout << 2;
-        } else {
-            // potentiellement faire pareil que quand c'est vide ou autre chose
-            cout << 3;
+        if(tombe.getData()) {
+            tombe.updateValue("0");
+            // playData(EstCeQueVousAllezBien);
+            playmp3(Test, "est_ce_que_vous_allez_bien");
+            string mot = devineMot(Test, 4);
+
+            if ( mot.empty() ) {
+                // faire un truc
+                cout << 1;
+            } else if ( mot == "oui" || mot == "cava" || mot == "jevaisbien" || mot == "d'autres mots où il confirme") {
+                // faire autre chose
+                // tombe.updateValue("0");
+                cout << 2;
+            } else {
+                // potentiellement faire pareil que quand c'est vide ou autre chose
+                mort.updateValue("1");
+                // playData(NousAllonsAppelerUneAssistance);
+                playmp3(Test, "nous_allons_appeler_une_assistance");
+                cout << 3;
+            }
         }
-    // }
+    }
 }
